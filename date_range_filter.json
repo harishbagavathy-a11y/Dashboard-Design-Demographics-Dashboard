@@ -1,0 +1,12 @@
+{
+  "filter_id": "NATIVE_FILTER_DATE",
+  "name": "Date Range",
+  "type": "filter_time",
+  "default_start": "2025-01-01",
+  "default_end": "2026-09-30",
+  "time_grain": "P1M",
+  "target_column": "month_start_date",
+  "targets": [
+    { "dataset": "fact_headcount_monthly", "column": "month_start_date" }
+  ]
+}

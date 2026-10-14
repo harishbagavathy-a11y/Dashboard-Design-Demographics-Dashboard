@@ -1,0 +1,24 @@
+{
+  "filter_id": "NATIVE_FILTER_DEPT",
+  "name": "Department",
+  "type": "filter_select",
+  "is_multi_select": true,
+  "default_value": "ALL",
+  "available_options": [
+    { "id": "D01", "name": "Engineering", "count": 167 },
+    { "id": "D06", "name": "Customer Support", "count": 59 },
+    { "id": "D03", "name": "Data & AI", "count": 52 },
+    { "id": "D04", "name": "Sales", "count": 46 },
+    { "id": "D09", "name": "Operations & IT", "count": 29 },
+    { "id": "D02", "name": "Product & Design", "count": 26 },
+    { "id": "D07", "name": "Human Resources", "count": 20 },
+    { "id": "D08", "name": "Finance & Accounts", "count": 17 },
+    { "id": "D05", "name": "Marketing", "count": 13 },
+    { "id": "D10", "name": "Legal & Compliance", "count": 11 },
+    { "id": "D00", "name": "Executive Office", "count": 1 }
+  ],
+  "targets": [
+    { "dataset": "fact_headcount_monthly", "column": "department_name" },
+    { "dataset": "dim_employee_active", "column": "department_name" }
+  ]
+}

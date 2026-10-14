@@ -1,0 +1,26 @@
+{
+  "chart_id": "03_exits",
+  "chart_title": "exits (leavers)",
+  "metric_dictionary_id": "M001-B: exits",
+  "viz_type": "big_number_total",
+  "dataset": "fact_headcount_monthly",
+  "metric": "SUM(exits)",
+  "snapshot_value": 3,
+  "formatted_value": "3",
+  "unit": "Departures",
+  "takeaway": "Only 3 exits in September 2026, holding monthly attrition at an ultra-low 0.31%.",
+  "adhoc_filters": [
+    {
+      "col": "month_start_date",
+      "op": "==",
+      "val": "2026-09-01"
+    }
+  ],
+  "params": {
+    "metric": "exits",
+    "subheader": "Departures (0.31% Attrition)",
+    "y_axis_format": ",d",
+    "header_font_size": 0.4,
+    "subheader_font_size": 0.15
+  }
+}

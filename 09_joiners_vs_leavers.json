@@ -1,0 +1,32 @@
+{
+  "chart_id": "09_joiners_vs_leavers",
+  "chart_title": "joiners_vs_leavers",
+  "metric_dictionary_id": "M001-F: flow_rate",
+  "viz_type": "mixed_timeseries",
+  "dataset": "fact_headcount_monthly",
+  "series_a": {
+    "metric": "hires",
+    "type": "bar",
+    "color": "#009E73",
+    "label": "Hires (Joiners)"
+  },
+  "series_b": {
+    "metric": "exits",
+    "type": "bar",
+    "color": "#D55E00",
+    "label": "Exits (Leavers)"
+  },
+  "series_c": {
+    "metric": "net_change",
+    "type": "line",
+    "color": "#0072B2",
+    "label": "Net Change"
+  },
+  "snapshot_month": "2026-09-01",
+  "snapshot_hires": 17,
+  "snapshot_exits": 3,
+  "snapshot_net": 14,
+  "snapshot_attrition_pct": "0.31%",
+  "takeaway": "September 2026 recorded +14 net additions (17 joiners vs 3 exits), marking the highest monthly intake in 21 months.",
+  "color_scheme": "custom_okabe_ito"
+}

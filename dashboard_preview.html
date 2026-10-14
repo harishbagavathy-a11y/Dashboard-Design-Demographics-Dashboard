@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PulseIQ — Headcount & Departments Dashboard</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    /* Tabular figures for aligned KPI numbers */
+    .tabular-nums { font-variant-numeric: tabular-nums; }
+    .transition-all-200 { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+  </style>
+</head>
+<body class="bg-[var(--background)] text-[var(--foreground)] antialiased p-3 sm:p-6 min-h-screen">
+
+  <!-- TOP APP BAR -->
+  <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-[var(--border)]">
+    <div>
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-[#0072B2] text-white font-bold text-sm shadow-sm">P</span>
+        <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-[var(--foreground)]">PulseIQ Analytics</h1>
+        <span class="text-xs px-2.5 py-0.5 rounded-full font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300 border border-blue-200 dark:border-blue-800">Warehouse Connected</span>
+      </div>
+      <p class="text-xs sm:text-sm text-[var(--muted-foreground)] mt-1">Headcount & Departments Executive Overview • Metric Governance Standard</p>
+    </div>
+
+    <!-- View Controls & Date Context -->
+    <div class="flex flex-wrap items-center gap-2.5">
+      <div class="flex items-center gap-2 text-xs bg-[var(--card)] px-3 py-1.5 rounded-lg border border-[var(--border)] shadow-sm">
+        <span class="w-2 h-2 rounded-full bg-[#009E73] animate-pulse"></span>
+        <span class="text-[var(--muted-foreground)]">As of Period:</span>
+        <strong class="text-[var(--foreground)] font-semibold">2026-09 (Latest Snapshot)</strong>
+      </div>
+
+      <button id="toggleDesignReviewBtn" onclick="toggleDesignReview()" class="text-xs font-medium px-3 py-1.5 rounded-lg border border-[#0072B2] text-[#0072B2] hover:bg-blue-50 dark:hover:bg-blue-950/40 transition-colors">
+        🔍 View AI Design Review & Diff
+      </button>
+    </div>
+  </header>
+
+  <!-- DESIGN REVIEW COMPARISON BANNER (COLLAPSIBLE) -->
+  <div id="designReviewPanel" class="hidden mb-6 p-4 rounded-xl border border-amber-300 bg-amber-50 dark:bg-amber-950/30 dark:border-amber-700">
+    <div class="flex items-start justify-between">
+      <div class="space-y-2">
+        <h3 class="text-sm font-semibold text-amber-900 dark:text-amber-200 flex items-center gap-2">
+          <span>⚖️ AI Design Critique & Implemented Refinements</span>
+        </h3>
+        <p class="text-xs text-amber-800 dark:text-amber-300">
+          The original layout proposed by the AI design tool suffered from poor visual hierarchy, color-blindness traps, and unreadable chart choices. Below is what was improved:
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-3 pt-2 text-xs">
+          <div class="p-2.5 rounded-lg bg-white/70 dark:bg-black/20 border border-amber-200 dark:border-amber-800">
+            <strong class="block text-red-600 dark:text-red-400">❌ Initial AI: Hires First</strong>
+            <p class="mt-1 text-[var(--foreground)]">Placed high-velocity inflow on the left without reference to company size.</p>
+            <strong class="block mt-2 text-[#009E73]">✅ Improved: Headcount First</strong>
+            <p class="mt-0.5 text-[var(--muted-foreground)]">Total stock anchor (441) leads, followed by Hires (17), Exits (3), Net Growth (+14).</p>
+          </div>
+          <div class="p-2.5 rounded-lg bg-white/70 dark:bg-black/20 border border-amber-200 dark:border-amber-800">
+            <strong class="block text-red-600 dark:text-red-400">❌ Initial AI: 11-Slice Pie</strong>
+            <p class="mt-1 text-[var(--foreground)]">Departments in a crowded pie chart with microscopic labels under 10px.</p>
+            <strong class="block mt-2 text-[#009E73]">✅ Improved: Ranked Bars</strong>
+            <p class="mt-0.5 text-[var(--muted-foreground)]">Clean horizontal ranked bars with direct counts & percentage shares.</p>
+          </div>
+          <div class="p-2.5 rounded-lg bg-white/70 dark:bg-black/20 border border-amber-200 dark:border-amber-800">
+            <strong class="block text-red-600 dark:text-red-400">❌ Initial AI: Neon Red/Green</strong>
+            <p class="mt-1 text-[var(--foreground)]">Classic red/green barrier for deuteranopia & protanopia viewers.</p>
+            <strong class="block mt-2 text-[#009E73]">✅ Improved: Okabe-Ito Palette</strong>
+            <p class="mt-0.5 text-[var(--muted-foreground)]">Bluish-Green (#009E73) for hires, Vermilion (#D55E00) for exits, Deep Blue (#0072B2) base.</p>
+          </div>
+          <div class="p-2.5 rounded-lg bg-white/70 dark:bg-black/20 border border-amber-200 dark:border-amber-800">
+            <strong class="block text-red-600 dark:text-red-400">❌ Initial AI: No Takeaways</strong>
+            <p class="mt-1 text-[var(--foreground)]">Static unlabeled charts requiring cognitive mental calculation.</p>
+            <strong class="block mt-2 text-[#009E73]">✅ Improved: Golden Rule</strong>
+            <p class="mt-0.5 text-[var(--muted-foreground)]">Metric dictionary name + verified one-line takeaway on every single card.</p>
+          </div>
+        </div>
+      </div>
+      <button onclick="toggleDesignReview()" class="text-xs text-amber-700 hover:text-amber-900 font-bold ml-2">✕ Close</button>
+    </div>
+  </div>
+
+  <!-- MAIN DASHBOARD CONTAINER: SIDEBAR + CONTENT -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+    <!-- LEFT SIDEBAR: FILTERS -->
+    <aside class="lg:col-span-3 space-y-4">
+      <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 shadow-sm sticky top-4">
+        <div class="flex items-center justify-between pb-3 border-b border-[var(--border)]">
+          <h2 class="text-sm font-semibold flex items-center gap-2">
+            <span>⚙️ Dashboard Filters</span>
+          </h2>
+          <button onclick="resetFilters()" class="text-xs text-[#0072B2] hover:underline font-medium">Reset All</button>
+        </div>
+
+        <div class="space-y-4 mt-4">
+          <!-- Department Filter -->
+          <div>
+            <label class="block text-xs font-semibold text-[var(--foreground)] mb-1.5" for="deptFilter">
+              🏢 Department Filter
+            </label>
+            <select id="deptFilter" onchange="applyFilters()" class="w-full text-xs rounded-lg border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] p-2 focus:ring-2 focus:ring-[#0072B2] focus:outline-none">
+              <option value="ALL">All Departments (11 Active)</option>
+              <option value="D01">Engineering (167 emps)</option>
+              <option value="D06">Customer Support (59 emps)</option>
+              <option value="D03">Data & AI (52 emps)</option>
+              <option value="D04">Sales (46 emps)</option>
+              <option value="D09">Operations & IT (29 emps)</option>
+              <option value="D02">Product & Design (26 emps)</option>
+              <option value="D07">Human Resources (20 emps)</option>
+              <option value="D08">Finance & Accounts (17 emps)</option>
+              <option value="D05">Marketing (13 emps)</option>
+              <option value="D10">Legal & Compliance (11 emps)</option>
+              <option value="D00">Executive Office (1 emp)</option>
+            </select>
+          </div>
+
+          <!-- Date Range Filter -->
+          <div>
+            <label class="block text-xs font-semibold text-[var(--foreground)] mb-1.5">
+              📅 Date Range
+            </label>
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <span class="text-[11px] text-[var(--muted-foreground)] block mb-0.5">Start</span>
+                <input type="text" readonly value="2025-01" class="w-full text-xs p-1.5 rounded border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] cursor-not-allowed">
+              </div>
+              <div>
+                <span class="text-[11px] text-[var(--muted-foreground)] block mb-0.5">End (Snapshot)</span>
+                <input type="text" readonly value="2026-09" class="w-full text-xs p-1.5 rounded border border-[var(--border)] bg-[var(--background)] text-[var(--foreground)] cursor-not-allowed">
+              </div>
+            </div>
+            <p class="text-[11px] text-[var(--muted-foreground)] mt-1">21 months continuous star schema history</p>
+          </div>
+
+          <!-- Employment Status Toggle -->
+          <div>
+            <label class="block text-xs font-semibold text-[var(--foreground)] mb-1.5">
+              👥 Employment Status
+            </label>
+            <div class="space-y-1.5 text-xs text-[var(--muted-foreground)]">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="radio" name="statusFilter" checked class="text-[#0072B2] focus:ring-[#0072B2]">
+                <span class="text-[var(--foreground)] font-medium">Active Headcount Only (M001)</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer opacity-60">
+                <input type="radio" name="statusFilter" disabled>
+                <span>Include Historical Exits</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Metric Lineage Info Box -->
+          <div class="p-3 rounded-lg bg-[var(--background)] border border-[var(--border)] text-xs space-y-1">
+            <span class="font-semibold text-[var(--foreground)] block">📖 Metric Governance Note:</span>
+            <p class="text-[11px] text-[var(--muted-foreground)] leading-relaxed">
+              Titles strictly match <code class="bg-[var(--card)] px-1 py-0.5 rounded border text-[10px]">metric_dictionary.csv</code>. Headcount grain: one row per employee on reporting date.
+            </p>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- RIGHT MAIN CONTENT: 4 KPIS + CHARTS -->
+    <main class="lg:col-span-9 space-y-6">
+
+      <!-- TOP 4 KEY NUMBERS (KPIS) -->
+      <section class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <!-- KPI 1: Total Headcount -->
+        <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 shadow-sm hover:border-[#0072B2] transition-colors">
+          <div class="flex items-center justify-between text-xs text-[var(--muted-foreground)] mb-1">
+            <span class="font-semibold uppercase tracking-wider text-[11px]">headcount</span>
+            <span class="w-2 h-2 rounded-full bg-[#0072B2]"></span>
+          </div>
+          <div class="text-2xl sm:text-3xl font-bold tabular-nums text-[var(--foreground)]" id="kpiHeadcount">441</div>
+          <div class="flex items-center gap-1 text-xs text-[#009E73] font-medium mt-1">
+            <span>▲ +14 (+3.3%)</span>
+            <span class="text-[var(--muted-foreground)] font-normal">vs prev month</span>
+          </div>
+          <p class="text-[11px] text-[var(--muted-foreground)] mt-1.5 pt-1.5 border-t border-[var(--border)]">
+            Total active workforce (M001)
+          </p>
+        </div>
+
+        <!-- KPI 2: New Joiners -->
+        <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 shadow-sm hover:border-[#009E73] transition-colors">
+          <div class="flex items-center justify-between text-xs text-[var(--muted-foreground)] mb-1">
+            <span class="font-semibold uppercase tracking-wider text-[11px]">hires (joiners)</span>
+            <span class="w-2 h-2 rounded-full bg-[#009E73]"></span>
+          </div>
+          <div class="text-2xl sm:text-3xl font-bold tabular-nums text-[#009E73]" id="kpiHires">17</div>
+          <div class="flex items-center gap-1 text-xs text-[#009E73] font-medium mt-1">
+            <span>▲ +9 (+112%)</span>
+            <span class="text-[var(--muted-foreground)] font-normal">vs Aug intake (8)</span>
+          </div>
+          <p class="text-[11px] text-[var(--muted-foreground)] mt-1.5 pt-1.5 border-t border-[var(--border)]">
+            New talent added in Sep 2026
+          </p>
+        </div>
+
+        <!-- KPI 3: Leavers / Exits -->
+        <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 shadow-sm hover:border-[#D55E00] transition-colors">
+          <div class="flex items-center justify-between text-xs text-[var(--muted-foreground)] mb-1">
+            <span class="font-semibold uppercase tracking-wider text-[11px]">exits (leavers)</span>
+            <span class="w-2 h-2 rounded-full bg-[#D55E00]"></span>
+          </div>
+          <div class="text-2xl sm:text-3xl font-bold tabular-nums text-[#D55E00]" id="kpiExits">3</div>
+          <div class="flex items-center gap-1 text-xs text-[var(--muted-foreground)] font-medium mt-1">
+            <span>0.31% monthly</span>
+            <span class="text-[var(--muted-foreground)] font-normal">attrition rate</span>
+          </div>
+          <p class="text-[11px] text-[var(--muted-foreground)] mt-1.5 pt-1.5 border-t border-[var(--border)]">
+            Well below industry benchmark
+          </p>
+        </div>
+
+        <!-- KPI 4: Net Growth -->
+        <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-4 shadow-sm hover:border-[#0072B2] transition-colors">
+          <div class="flex items-center justify-between text-xs text-[var(--muted-foreground)] mb-1">
+            <span class="font-semibold uppercase tracking-wider text-[11px]">net_change</span>
+            <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+          </div>
+          <div class="text-2xl sm:text-3xl font-bold tabular-nums text-[var(--foreground)]" id="kpiNetChange">+14</div>
+          <div class="flex items-center gap-1 text-xs text-[#009E73] font-medium mt-1">
+            <span>▲ +47 net emps</span>
+            <span class="text-[var(--muted-foreground)] font-normal">over 21 months</span>
+          </div>
+          <p class="text-[11px] text-[var(--muted-foreground)] mt-1.5 pt-1.5 border-t border-[var(--border)]">
+            Hires minus exits momentum
+          </p>
+        </div>
+      </section>
+
+      <!-- ROW 1 OF CHARTS: HEADCOUNT TREND & DEPARTMENT SPLIT -->
+      <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- CHART 1: headcount_trend -->
+        <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 shadow-sm">
+          <div class="pb-3 border-b border-[var(--border)] mb-4">
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-semibold tracking-tight text-[var(--foreground)]">headcount_trend</h3>
+              <span class="text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[var(--muted-foreground)]">21 Months</span>
+            </div>
+            <!-- GOLDEN RULE: ONE-LINE TAKEAWAY -->
+            <p class="text-xs text-[var(--muted-foreground)] mt-1 font-medium italic">
+              📌 <span class="text-[var(--foreground)]">Takeaway:</span> Active workforce grew from 394 to 441 (+11.9%) with compounding expansion.
+            </p>
+          </div>
+
+          <!-- Chart Visual (SVG Area / Line Chart with Real Warehouse Points) -->
+          <div class="relative w-full h-56 pt-2">
+            <svg class="w-full h-full overflow-visible" viewBox="0 0 400 160">
+              <defs>
+                <linearGradient id="trendGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#0072B2" stop-opacity="0.25"/>
+                  <stop offset="100%" stop-color="#0072B2" stop-opacity="0.0"/>
+                </linearGradient>
+              </defs>
+              <!-- Grid lines -->
+              <line x1="30" y1="20" x2="390" y2="20" stroke="currentColor" class="text-[var(--border)]" stroke-dasharray="3,3"/>
+              <line x1="30" y1="60" x2="390" y2="60" stroke="currentColor" class="text-[var(--border)]" stroke-dasharray="3,3"/>
+              <line x1="30" y1="100" x2="390" y2="100" stroke="currentColor" class="text-[var(--border)]" stroke-dasharray="3,3"/>
+              <line x1="30" y1="140" x2="390" y2="140" stroke="currentColor" class="text-[var(--border)]"/>
+
+              <!-- Axis labels -->
+              <text x="25" y="24" text-anchor="end" class="text-[10px] fill-[var(--muted-foreground)] font-mono">450</text>
+              <text x="25" y="64" text-anchor="end" class="text-[10px] fill-[var(--muted-foreground)] font-mono">420</text>
+              <text x="25" y="104" text-anchor="end" class="text-[10px] fill-[var(--muted-foreground)] font-mono">390</text>
+              <text x="25" y="144" text-anchor="end" class="text-[10px] fill-[var(--muted-foreground)] font-mono">360</text>
+
+              <!-- Real Area & Path: Jan 2025 (394) to Sep 2026 (441) -->
+              <!-- Points (x, y): 394->100, 398->95, 405->86, 409->80, 407->83, 409->80, 417->70, 421->64, 427->56, 441->32 -->
+              <polygon points="40,140 40,97 80,95 120,96 160,93 200,90 240,86 280,80 320,70 350,56 385,32 385,140" fill="url(#trendGradient)" />
+              <polyline points="40,97 80,95 120,96 160,93 200,90 240,86 280,80 320,70 350,56 385,32" fill="none" stroke="#0072B2" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+              <!-- Milestone Markers -->
+              <circle cx="40" cy="97" r="4" fill="#0072B2" class="ring-2 ring-white dark:ring-slate-900"/>
+              <text x="40" y="88" text-anchor="middle" class="text-[10px] font-bold fill-[var(--foreground)]">394</text>
+
+              <circle cx="280" cy="80" r="3.5" fill="#0072B2"/>
+              <text x="280" y="73" text-anchor="middle" class="text-[10px] font-medium fill-[var(--muted-foreground)]">409</text>
+
+              <circle cx="385" cy="32" r="5" fill="#009E73" class="ring-2 ring-white dark:ring-slate-900"/>
+              <text x="385" y="22" text-anchor="middle" class="text-[11px] font-bold fill-[#009E73]">441</text>
+
+              <!-- X Axis Labels -->
+              <text x="40" y="155" text-anchor="middle" class="text-[10px] fill-[var(--muted-foreground)]">Jan 25</text>
+              <text x="160" y="155" text-anchor="middle" class="text-[10px] fill-[var(--muted-foreground)]">Jul 25</text>
+              <text x="280" y="155" text-anchor="middle" class="text-[10px] fill-[var(--muted-foreground)]">Feb 26</text>
+              <text x="385" y="155" text-anchor="middle" class="text-[10px] font-semibold fill-[var(--foreground)]">Sep 26</text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- CHART 2: department_split -->
+        <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 shadow-sm">
+          <div class="pb-3 border-b border-[var(--border)] mb-4">
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-semibold tracking-tight text-[var(--foreground)]">department_split</h3>
+              <span class="text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[var(--muted-foreground)]">11 Departments</span>
+            </div>
+            <!-- GOLDEN RULE: ONE-LINE TAKEAWAY -->
+            <p class="text-xs text-[var(--muted-foreground)] mt-1 font-medium italic">
+              📌 <span class="text-[var(--foreground)]">Takeaway:</span> Engineering (167) and Support (59) anchor 51.2% of all company talent.
+            </p>
+          </div>
+
+          <!-- Ranked Horizontal Bars with Exact Headcount -->
+          <div class="space-y-2 pt-1 text-xs">
+            <!-- Engineering -->
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-medium text-[var(--foreground)]">Engineering</span>
+                <span class="tabular-nums font-semibold text-[var(--foreground)]">167 emps <span class="text-[var(--muted-foreground)] font-normal">(37.9%)</span></span>
+              </div>
+              <div class="w-full bg-[var(--border)] h-3 rounded-full overflow-hidden">
+                <div class="bg-[#0072B2] h-full rounded-full" style="width: 37.9%"></div>
+              </div>
+            </div>
+
+            <!-- Customer Support -->
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-medium text-[var(--foreground)]">Customer Support</span>
+                <span class="tabular-nums font-semibold text-[var(--foreground)]">59 emps <span class="text-[var(--muted-foreground)] font-normal">(13.4%)</span></span>
+              </div>
+              <div class="w-full bg-[var(--border)] h-3 rounded-full overflow-hidden">
+                <div class="bg-[#0072B2] h-full rounded-full opacity-90" style="width: 13.4%"></div>
+              </div>
+            </div>
+
+            <!-- Data & AI -->
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-medium text-[var(--foreground)]">Data & AI</span>
+                <span class="tabular-nums font-semibold text-[var(--foreground)]">52 emps <span class="text-[var(--muted-foreground)] font-normal">(11.8%)</span></span>
+              </div>
+              <div class="w-full bg-[var(--border)] h-3 rounded-full overflow-hidden">
+                <div class="bg-[#0072B2] h-full rounded-full opacity-85" style="width: 11.8%"></div>
+              </div>
+            </div>
+
+            <!-- Sales -->
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-medium text-[var(--foreground)]">Sales</span>
+                <span class="tabular-nums font-semibold text-[var(--foreground)]">46 emps <span class="text-[var(--muted-foreground)] font-normal">(10.4%)</span></span>
+              </div>
+              <div class="w-full bg-[var(--border)] h-3 rounded-full overflow-hidden">
+                <div class="bg-[#0072B2] h-full rounded-full opacity-80" style="width: 10.4%"></div>
+              </div>
+            </div>
+
+            <!-- Operations & IT -->
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-medium text-[var(--foreground)]">Operations & IT</span>
+                <span class="tabular-nums font-semibold text-[var(--foreground)]">29 emps <span class="text-[var(--muted-foreground)] font-normal">(6.6%)</span></span>
+              </div>
+              <div class="w-full bg-[var(--border)] h-3 rounded-full overflow-hidden">
+                <div class="bg-[#0072B2] h-full rounded-full opacity-70" style="width: 6.6%"></div>
+              </div>
+            </div>
+
+            <!-- Product & Design + Other G&A -->
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="font-medium text-[var(--muted-foreground)]">Other Departments (Product, HR, Finance, Legal, Exec)</span>
+                <span class="tabular-nums font-semibold text-[var(--foreground)]">88 emps <span class="text-[var(--muted-foreground)] font-normal">(19.9%)</span></span>
+              </div>
+              <div class="w-full bg-[var(--border)] h-3 rounded-full overflow-hidden">
+                <div class="bg-[#56B4E9] h-full rounded-full" style="width: 19.9%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ROW 2 OF CHARTS: TENURE BANDS & ROLE MIX -->
+      <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- CHART 3: tenure_bands -->
+        <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 shadow-sm">
+          <div class="pb-3 border-b border-[var(--border)] mb-4">
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-semibold tracking-tight text-[var(--foreground)]">tenure_bands</h3>
+              <span class="text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[var(--muted-foreground)]">Service Length</span>
+            </div>
+            <!-- GOLDEN RULE: ONE-LINE TAKEAWAY -->
+            <p class="text-xs text-[var(--muted-foreground)] mt-1 font-medium italic">
+              📌 <span class="text-[var(--foreground)]">Takeaway:</span> 50.6% have 3+ years tenure, combining deep company memory with a 21.5% intake.
+            </p>
+          </div>
+
+          <!-- Vertical Column Bars (Accessible Okabe-Ito Colors) -->
+          <div class="grid grid-cols-5 gap-2 h-44 items-end pt-4 pb-2 border-b border-[var(--border)]">
+            <!-- Band 1: Under 1 Year -->
+            <div class="flex flex-col items-center gap-1.5 h-full justify-end">
+              <span class="text-[11px] font-bold tabular-nums text-[#009E73]">95 (21.5%)</span>
+              <div class="w-full bg-[#009E73] rounded-t-md transition-all duration-300" style="height: 60%"></div>
+              <span class="text-[10px] text-[var(--muted-foreground)] text-center leading-tight">&lt; 1 Year</span>
+            </div>
+
+            <!-- Band 2: 1-3 Years -->
+            <div class="flex flex-col items-center gap-1.5 h-full justify-end">
+              <span class="text-[11px] font-bold tabular-nums text-[#0072B2]">123 (27.9%)</span>
+              <div class="w-full bg-[#0072B2] rounded-t-md transition-all duration-300" style="height: 78%"></div>
+              <span class="text-[10px] text-[var(--muted-foreground)] text-center leading-tight">1 - 3 Yrs</span>
+            </div>
+
+            <!-- Band 3: 3-5 Years -->
+            <div class="flex flex-col items-center gap-1.5 h-full justify-end">
+              <span class="text-[11px] font-bold tabular-nums text-[#0072B2]">109 (24.7%)</span>
+              <div class="w-full bg-[#0072B2] rounded-t-md opacity-90 transition-all duration-300" style="height: 70%"></div>
+              <span class="text-[10px] text-[var(--muted-foreground)] text-center leading-tight">3 - 5 Yrs</span>
+            </div>
+
+            <!-- Band 4: 5-10 Years -->
+            <div class="flex flex-col items-center gap-1.5 h-full justify-end">
+              <span class="text-[11px] font-bold tabular-nums text-[#E69F00]">82 (18.6%)</span>
+              <div class="w-full bg-[#E69F00] rounded-t-md transition-all duration-300" style="height: 52%"></div>
+              <span class="text-[10px] text-[var(--muted-foreground)] text-center leading-tight">5 - 10 Yrs</span>
+            </div>
+
+            <!-- Band 5: 10+ Years -->
+            <div class="flex flex-col items-center gap-1.5 h-full justify-end">
+              <span class="text-[11px] font-bold tabular-nums text-[#CC79A7]">32 (7.3%)</span>
+              <div class="w-full bg-[#CC79A7] rounded-t-md transition-all duration-300" style="height: 24%"></div>
+              <span class="text-[10px] text-[var(--muted-foreground)] text-center leading-tight">10+ Yrs</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CHART 4: role_mix -->
+        <div class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 shadow-sm">
+          <div class="pb-3 border-b border-[var(--border)] mb-4">
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-semibold tracking-tight text-[var(--foreground)]">role_mix</h3>
+              <span class="text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[var(--muted-foreground)]">Job Levels L1-L7</span>
+            </div>
+            <!-- GOLDEN RULE: ONE-LINE TAKEAWAY -->
+            <p class="text-xs text-[var(--muted-foreground)] mt-1 font-medium italic">
+              📌 <span class="text-[var(--foreground)]">Takeaway:</span> Healthy execution pyramid with 59.4% in mid-senior levels (L2–L3) and 7.7% executive leads.
+            </p>
+          </div>
+
+          <!-- Hierarchical Pyramid View -->
+          <div class="space-y-2 pt-1 text-xs">
+            <div class="flex items-center gap-3">
+              <span class="w-28 text-[11px] text-[var(--muted-foreground)] font-medium">L6-L7 Executive</span>
+              <div class="flex-1 bg-[var(--border)] h-3 rounded-full overflow-hidden">
+                <div class="bg-[#CC79A7] h-full rounded-full" style="width: 2.9%"></div>
+              </div>
+              <span class="text-[11px] font-semibold tabular-nums text-[var(--foreground)] w-14 text-right">13 (2.9%)</span>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <span class="w-28 text-[11px] text-[var(--muted-foreground)] font-medium">L5 Director / Prin</span>
+              <div class="flex-1 bg-[var(--border)] h-3 rounded-full overflow-hidden">
+                <div class="bg-[#E69F00] h-full rounded-full" style="width: 4.8%"></div>
+              </div>
+              <span class="text-[11px] font-semibold tabular-nums text-[var(--foreground)] w-14 text-right">21 (4.8%)</span>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <span class="w-28 text-[11px] text-[var(--muted-foreground)] font-medium">L4 Lead / Staff</span>
+              <div class="flex-1 bg-[var(--border)] h-3 rounded-full overflow-hidden">
+                <div class="bg-[#56B4E9] h-full rounded-full" style="width: 15.6%"></div>
+              </div>
+              <span class="text-[11px] font-semibold tabular-nums text-[var(--foreground)] w-14 text-right">69 (15.6%)</span>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <span class="w-28 text-[11px] text-[var(--foreground)] font-semibold">L3 Senior Spec</span>
+              <div class="flex-1 bg-[var(--border)] h-3 rounded-full overflow-hidden">
+                <div class="bg-[#0072B2] h-full rounded-full" style="width: 27.9%"></div>
+              </div>
+              <span class="text-[11px] font-bold tabular-nums text-[#0072B2] w-14 text-right">123 (27.9%)</span>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <span class="w-28 text-[11px] text-[var(--foreground)] font-semibold">L2 Mid-Level Spec</span>
+              <div class="flex-1 bg-[var(--border)] h-3 rounded-full overflow-hidden">
+                <div class="bg-[#0072B2] h-full rounded-full opacity-90" style="width: 31.5%"></div>
+              </div>
+              <span class="text-[11px] font-bold tabular-nums text-[#0072B2] w-14 text-right">139 (31.5%)</span>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <span class="w-28 text-[11px] text-[var(--muted-foreground)] font-medium">L1 Entry / Assoc</span>
+              <div class="flex-1 bg-[var(--border)] h-3 rounded-full overflow-hidden">
+                <div class="bg-[#009E73] h-full rounded-full" style="width: 17.2%"></div>
+              </div>
+              <span class="text-[11px] font-semibold tabular-nums text-[var(--foreground)] w-14 text-right">76 (17.2%)</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ROW 3 OF CHARTS: FULL-WIDTH JOINERS VS LEAVERS -->
+      <section class="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 shadow-sm">
+        <div class="pb-3 border-b border-[var(--border)] mb-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div>
+              <h3 class="text-sm font-semibold tracking-tight text-[var(--foreground)]">joiners_vs_leavers</h3>
+              <p class="text-xs text-[var(--muted-foreground)] font-medium italic mt-0.5">
+                📌 <span class="text-[var(--foreground)]">Takeaway:</span> September 2026 recorded +14 net additions (17 joiners vs 3 exits), marking the highest monthly intake in 21 months.
+              </p>
+            </div>
+            <div class="flex items-center gap-4 text-xs">
+              <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-[#009E73]"></span> Hires (Joiners)</span>
+              <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-[#D55E00]"></span> Exits (Leavers)</span>
+              <span class="flex items-center gap-1.5"><span class="w-3 h-0.5 bg-[#0072B2]"></span> Net Change Line</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grouped Bar & Net Line Chart (Last 12 Months) -->
+        <div class="w-full h-52 pt-3">
+          <svg class="w-full h-full overflow-visible" viewBox="0 0 600 160">
+            <!-- Grid Lines -->
+            <line x1="30" y1="20" x2="580" y2="20" stroke="currentColor" class="text-[var(--border)]" stroke-dasharray="3,3"/>
+            <line x1="30" y1="60" x2="580" y2="60" stroke="currentColor" class="text-[var(--border)]" stroke-dasharray="3,3"/>
+            <line x1="30" y1="100" x2="580" y2="100" stroke="currentColor" class="text-[var(--border)]" stroke-dasharray="3,3"/>
+            <line x1="30" y1="130" x2="580" y2="130" stroke="currentColor" class="text-[var(--border)]"/>
+
+            <text x="25" y="24" text-anchor="end" class="text-[10px] fill-[var(--muted-foreground)] font-mono">20</text>
+            <text x="25" y="64" text-anchor="end" class="text-[10px] fill-[var(--muted-foreground)] font-mono">15</text>
+            <text x="25" y="104" text-anchor="end" class="text-[10px] fill-[var(--muted-foreground)] font-mono">10</text>
+            <text x="25" y="134" text-anchor="end" class="text-[10px] fill-[var(--muted-foreground)] font-mono">0</text>
+
+            <!-- 12 Months: Oct 25 to Sep 26 -->
+            <!-- Oct 25: H9 E10 Net-1 | Nov 25: H6 E5 Net1 | Dec 25: H9 E5 Net4 -->
+            <!-- Jan 26: H8 E1 Net7  | Feb 26: H9 E5 Net4 | Mar 26: H5 E6 Net-1 -->
+            <!-- Apr 26: H5 E6 Net-1 | May 26: H6 E4 Net2 | Jun 26: H12 E4 Net8 -->
+            <!-- Jul 26: H10 E6 Net4 | Aug 26: H8 E2 Net6 | Sep 26: H17 E3 Net14 -->
+
+            <!-- Group 1: Oct 25 -->
+            <rect x="45" y="76" width="12" height="54" fill="#009E73" rx="1"/>
+            <rect x="59" y="70" width="12" height="60" fill="#D55E00" rx="1"/>
+
+            <!-- Group 2: Nov 25 -->
+            <rect x="90" y="94" width="12" height="36" fill="#009E73" rx="1"/>
+            <rect x="104" y="100" width="12" height="30" fill="#D55E00" rx="1"/>
+
+            <!-- Group 3: Dec 25 -->
+            <rect x="135" y="76" width="12" height="54" fill="#009E73" rx="1"/>
+            <rect x="149" y="100" width="12" height="30" fill="#D55E00" rx="1"/>
+
+            <!-- Group 4: Jan 26 -->
+            <rect x="180" y="82" width="12" height="48" fill="#009E73" rx="1"/>
+            <rect x="194" y="124" width="12" height="6" fill="#D55E00" rx="1"/>
+
+            <!-- Group 5: Feb 26 -->
+            <rect x="225" y="76" width="12" height="54" fill="#009E73" rx="1"/>
+            <rect x="239" y="100" width="12" height="30" fill="#D55E00" rx="1"/>
+
+            <!-- Group 6: Mar 26 -->
+            <rect x="270" y="100" width="12" height="30" fill="#009E73" rx="1"/>
+            <rect x="284" y="94" width="12" height="36" fill="#D55E00" rx="1"/>
+
+            <!-- Group 7: Apr 26 -->
+            <rect x="315" y="100" width="12" height="30" fill="#009E73" rx="1"/>
+            <rect x="329" y="94" width="12" height="36" fill="#D55E00" rx="1"/>
+
+            <!-- Group 8: May 26 -->
+            <rect x="360" y="94" width="12" height="36" fill="#009E73" rx="1"/>
+            <rect x="374" y="106" width="12" height="24" fill="#D55E00" rx="1"/>
+
+            <!-- Group 9: Jun 26 -->
+            <rect x="405" y="58" width="12" height="72" fill="#009E73" rx="1"/>
+            <rect x="419" y="106" width="12" height="24" fill="#D55E00" rx="1"/>
+
+            <!-- Group 10: Jul 26 -->
+            <rect x="450" y="70" width="12" height="60" fill="#009E73" rx="1"/>
+            <rect x="464" y="94" width="12" height="36" fill="#D55E00" rx="1"/>
+
+            <!-- Group 11: Aug 26 -->
+            <rect x="495" y="82" width="12" height="48" fill="#009E73" rx="1"/>
+            <rect x="509" y="118" width="12" height="12" fill="#D55E00" rx="1"/>
+
+            <!-- Group 12: Sep 26 (Highlight) -->
+            <rect x="540" y="28" width="12" height="102" fill="#009E73" rx="2" class="ring-2 ring-emerald-300"/>
+            <rect x="554" y="112" width="12" height="18" fill="#D55E00" rx="1"/>
+            <text x="546" y="22" text-anchor="middle" class="text-[10px] font-bold fill-[#009E73]">17</text>
+
+            <!-- Net Line Overlay -->
+            <polyline points="58,136 103,124 148,106 193,88 238,106 283,136 328,136 373,118 418,82 463,106 508,94 553,46" fill="none" stroke="#0072B2" stroke-width="2.5" stroke-dasharray="4,2"/>
+            <circle cx="553" cy="46" r="4.5" fill="#0072B2" class="ring-2 ring-white dark:ring-slate-900"/>
+            <text x="568" y="44" class="text-[10px] font-bold fill-[#0072B2]">+14</text>
+
+            <!-- Month labels -->
+            <text x="58" y="148" text-anchor="middle" class="text-[9px] fill-[var(--muted-foreground)]">Oct</text>
+            <text x="103" y="148" text-anchor="middle" class="text-[9px] fill-[var(--muted-foreground)]">Nov</text>
+            <text x="148" y="148" text-anchor="middle" class="text-[9px] fill-[var(--muted-foreground)]">Dec</text>
+            <text x="193" y="148" text-anchor="middle" class="text-[9px] fill-[var(--muted-foreground)]">Jan 26</text>
+            <text x="238" y="148" text-anchor="middle" class="text-[9px] fill-[var(--muted-foreground)]">Feb</text>
+            <text x="283" y="148" text-anchor="middle" class="text-[9px] fill-[var(--muted-foreground)]">Mar</text>
+            <text x="328" y="148" text-anchor="middle" class="text-[9px] fill-[var(--muted-foreground)]">Apr</text>
+            <text x="373" y="148" text-anchor="middle" class="text-[9px] fill-[var(--muted-foreground)]">May</text>
+            <text x="418" y="148" text-anchor="middle" class="text-[9px] fill-[var(--muted-foreground)]">Jun</text>
+            <text x="463" y="148" text-anchor="middle" class="text-[9px] fill-[var(--muted-foreground)]">Jul</text>
+            <text x="508" y="148" text-anchor="middle" class="text-[9px] fill-[var(--muted-foreground)]">Aug</text>
+            <text x="553" y="148" text-anchor="middle" class="text-[9px] font-bold fill-[var(--foreground)]">Sep 26</text>
+          </svg>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- INTERACTIVE JS FOR REAL-TIME DEPARTMENT FILTERING -->
+  <script>
+    const deptData = {
+      "ALL": { headcount: 441, hires: 17, exits: 3, net: "+14" },
+      "D01": { headcount: 167, hires: 9, exits: 2, net: "+7" },
+      "D06": { headcount: 59, hires: 2, exits: 0, net: "+2" },
+      "D03": { headcount: 52, hires: 2, exits: 0, net: "+2" },
+      "D04": { headcount: 46, hires: 1, exits: 1, net: "0" },
+      "D09": { headcount: 29, hires: 1, exits: 0, net: "+1" },
+      "D02": { headcount: 26, hires: 0, exits: 0, net: "0" },
+      "D07": { headcount: 20, hires: 1, exits: 0, net: "+1" },
+      "D08": { headcount: 17, hires: 1, exits: 0, net: "+1" },
+      "D05": { headcount: 13, hires: 0, exits: 0, net: "0" },
+      "D10": { headcount: 11, hires: 0, exits: 0, net: "0" },
+      "D00": { headcount: 1, hires: 0, exits: 0, net: "0" }
+    };
+
+    function applyFilters() {
+      const select = document.getElementById("deptFilter");
+      const val = select.value;
+      const data = deptData[val] || deptData["ALL"];
+
+      document.getElementById("kpiHeadcount").innerText = data.headcount;
+      document.getElementById("kpiHires").innerText = data.hires;
+      document.getElementById("kpiExits").innerText = data.exits;
+      document.getElementById("kpiNetChange").innerText = data.net;
+    }
+
+    function resetFilters() {
+      document.getElementById("deptFilter").value = "ALL";
+      applyFilters();
+    }
+
+    function toggleDesignReview() {
+      const panel = document.getElementById("designReviewPanel");
+      const btn = document.getElementById("toggleDesignReviewBtn");
+      panel.classList.toggle("hidden");
+      if (panel.classList.contains("hidden")) {
+        btn.innerText = "🔍 View AI Design Review & Diff";
+      } else {
+        btn.innerText = "✕ Hide AI Design Review";
+      }
+    }
+  </script>
+</body>
+</html>

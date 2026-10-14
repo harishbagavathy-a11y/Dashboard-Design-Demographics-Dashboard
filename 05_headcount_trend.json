@@ -1,0 +1,30 @@
+{
+  "chart_id": "05_headcount_trend",
+  "chart_title": "headcount_trend",
+  "metric_dictionary_id": "M001: headcount",
+  "viz_type": "echarts_timeseries_line",
+  "dataset": "fact_headcount_monthly",
+  "x_axis": "month_start_date",
+  "time_grain": "P1M",
+  "metric": "headcount",
+  "time_range": "2025-01-01 : 2026-09-30",
+  "start_headcount": 394,
+  "end_headcount": 441,
+  "growth_absolute": 47,
+  "growth_pct": "11.9%",
+  "takeaway": "Active headcount expanded from 394 to 441 (+11.9%) over 21 months with steady compounding growth.",
+  "color_scheme": "custom_okabe_ito",
+  "palette": {
+    "line": "#0072B2",
+    "area_fill": "rgba(0, 114, 178, 0.20)",
+    "highlight_point": "#009E73"
+  },
+  "params": {
+    "metrics": ["headcount"],
+    "x_axis": "month_start_date",
+    "seriesType": "line",
+    "area": true,
+    "y_axis_format": ",d",
+    "y_axis_bounds": [350, 460]
+  }
+}

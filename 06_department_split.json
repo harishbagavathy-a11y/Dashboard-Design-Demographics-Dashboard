@@ -1,0 +1,27 @@
+{
+  "chart_id": "06_department_split",
+  "chart_title": "department_split",
+  "metric_dictionary_id": "M001: headcount by department",
+  "viz_type": "echarts_timeseries_bar",
+  "orientation": "horizontal",
+  "dataset": "dim_employee_active",
+  "metric": "COUNT(DISTINCT employee_id)",
+  "order": "descending",
+  "total_departments": 11,
+  "top_departments": {
+    "Engineering": { "count": 167, "pct": "37.9%" },
+    "Customer Support": { "count": 59, "pct": "13.4%" },
+    "Data & AI": { "count": 52, "pct": "11.8%" },
+    "Sales": { "count": 46, "pct": "10.4%" },
+    "Operations & IT": { "count": 29, "pct": "6.6%" },
+    "Product & Design": { "count": 26, "pct": "5.9%" },
+    "Human Resources": { "count": 20, "pct": "4.5%" },
+    "Finance & Accounts": { "count": 17, "pct": "3.9%" },
+    "Marketing": { "count": 13, "pct": "2.9%" },
+    "Legal & Compliance": { "count": 11, "pct": "2.5%" },
+    "Executive Office": { "count": 1, "pct": "0.2%" }
+  },
+  "takeaway": "Engineering (167) and Customer Support (59) account for 51.2% of total company headcount.",
+  "color_scheme": "custom_okabe_ito",
+  "primary_bar_color": "#0072B2"
+}

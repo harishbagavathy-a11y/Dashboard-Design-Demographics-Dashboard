@@ -1,0 +1,26 @@
+{
+  "chart_id": "02_hires",
+  "chart_title": "hires (joiners)",
+  "metric_dictionary_id": "M001-A: hires",
+  "viz_type": "big_number_total",
+  "dataset": "fact_headcount_monthly",
+  "metric": "SUM(hires)",
+  "snapshot_value": 17,
+  "formatted_value": "17",
+  "unit": "New Joiners",
+  "takeaway": "17 new employees joined in September 2026 (+112% vs August intake of 8).",
+  "adhoc_filters": [
+    {
+      "col": "month_start_date",
+      "op": "==",
+      "val": "2026-09-01"
+    }
+  ],
+  "params": {
+    "metric": "hires",
+    "subheader": "New Joiners (Sep 2026)",
+    "y_axis_format": ",d",
+    "header_font_size": 0.4,
+    "subheader_font_size": 0.15
+  }
+}

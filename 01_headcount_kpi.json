@@ -1,0 +1,26 @@
+{
+  "chart_id": "01_headcount",
+  "chart_title": "headcount",
+  "metric_dictionary_id": "M001: headcount",
+  "viz_type": "big_number_total",
+  "dataset": "fact_headcount_monthly",
+  "metric": "SUM(headcount_end)",
+  "snapshot_value": 441,
+  "formatted_value": "441",
+  "unit": "Active Employees",
+  "takeaway": "Total active workforce reached an all-time high of 441 in September 2026.",
+  "adhoc_filters": [
+    {
+      "col": "month_start_date",
+      "op": "==",
+      "val": "2026-09-01"
+    }
+  ],
+  "params": {
+    "metric": "headcount",
+    "subheader": "Active Employees (M001)",
+    "y_axis_format": ",d",
+    "header_font_size": 0.4,
+    "subheader_font_size": 0.15
+  }
+}

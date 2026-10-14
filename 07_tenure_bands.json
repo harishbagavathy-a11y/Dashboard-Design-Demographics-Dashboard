@@ -1,0 +1,19 @@
+{
+  "chart_id": "07_tenure_bands",
+  "chart_title": "tenure_bands",
+  "metric_dictionary_id": "M001-D: tenure_bands",
+  "viz_type": "echarts_timeseries_bar",
+  "orientation": "vertical",
+  "dataset": "dim_employee_active",
+  "metric": "COUNT(DISTINCT employee_id)",
+  "cohorts": [
+    { "band": "1. Under 1 Year", "count": 95, "pct": "21.5%", "color": "#009E73" },
+    { "band": "2. 1 - 3 Years", "count": 123, "pct": "27.9%", "color": "#0072B2" },
+    { "band": "3. 3 - 5 Years", "count": 109, "pct": "24.7%", "color": "#0072B2" },
+    { "band": "4. 5 - 10 Years", "count": 82, "pct": "18.6%", "color": "#E69F00" },
+    { "band": "5. 10+ Years", "count": 32, "pct": "7.3%", "color": "#CC79A7" }
+  ],
+  "retention_3yr_plus_pct": "50.6%",
+  "takeaway": "50.6% of active employees have 3+ years of tenure, combining deep domain knowledge with a 21.5% first-year intake.",
+  "color_scheme": "custom_okabe_ito"
+}

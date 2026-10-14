@@ -1,0 +1,26 @@
+{
+  "chart_id": "04_net_headcount_change",
+  "chart_title": "net_headcount_change",
+  "metric_dictionary_id": "M001-C: net_change",
+  "viz_type": "big_number_total",
+  "dataset": "fact_headcount_monthly",
+  "metric": "SUM(hires) - SUM(exits)",
+  "snapshot_value": 14,
+  "formatted_value": "+14",
+  "unit": "Net Employee Additions",
+  "takeaway": "Net workforce addition of +14 in September 2026 (+47 net additions over 21 months).",
+  "adhoc_filters": [
+    {
+      "col": "month_start_date",
+      "op": "==",
+      "val": "2026-09-01"
+    }
+  ],
+  "params": {
+    "metric": "net_change",
+    "subheader": "Net Momentum (Sep 2026)",
+    "y_axis_format": "+,d",
+    "header_font_size": 0.4,
+    "subheader_font_size": 0.15
+  }
+}

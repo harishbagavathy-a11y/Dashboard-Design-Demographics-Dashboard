@@ -1,0 +1,21 @@
+{
+  "chart_id": "08_role_mix",
+  "chart_title": "role_mix",
+  "metric_dictionary_id": "M001-E: role_mix",
+  "viz_type": "echarts_timeseries_bar",
+  "orientation": "horizontal",
+  "dataset": "dim_employee_active",
+  "metric": "COUNT(DISTINCT employee_id)",
+  "job_levels": [
+    { "level": "L1", "title": "L1 - Entry / Associate", "count": 76, "pct": "17.2%", "color": "#009E73" },
+    { "level": "L2", "title": "L2 - Mid-Level Specialist", "count": 139, "pct": "31.5%", "color": "#0072B2" },
+    { "level": "L3", "title": "L3 - Senior Specialist", "count": 123, "pct": "27.9%", "color": "#0072B2" },
+    { "level": "L4", "title": "L4 - Lead / Staff", "count": 69, "pct": "15.6%", "color": "#56B4E9" },
+    { "level": "L5", "title": "L5 - Principal / Director", "count": 21, "pct": "4.8%", "color": "#E69F00" },
+    { "level": "L6-L7", "title": "L6+ - Executive / VP", "count": 13, "pct": "2.9%", "color": "#CC79A7" }
+  ],
+  "specialist_tier_pct": "59.4%",
+  "leadership_tier_pct": "7.7%",
+  "takeaway": "Balanced execution pyramid with 59.4% in mid-senior specialist tiers (L2–L3) and 7.7% executive leadership.",
+  "color_scheme": "custom_okabe_ito"
+}
